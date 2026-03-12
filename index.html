@@ -49,7 +49,7 @@
         /* リンク色分け（確認用） */
         .blue {
             background: rgba(0, 0, 255, 0.3);
-            border: 1px solid blue;
+            border: 1px solid gold;
         }
 
         /* --- 1枚目の配置 --- */
@@ -96,11 +96,14 @@
     <script>
         const _0x42af = ["getAttribute", "href", "Anonymous", "width", "height", "drawImage", "getImageData", "data", "includes", "?", "&", "id=qr_only_access", "QR코드 인식에 실패했습니다.", "오류가 발생했습니다.", "qrLink1", "qrLink2"];
 
+        // 解析中かどうかを判定するフラグ
+        let isProcessing = false;
+
         const _0x15ee = (_0x48bb) => {
             const oldEl = document.getElementById(_0x48bb);
             if (!oldEl) return;
 
-            // 重要：キャッシュ復帰時に既存のイベントを確実に破棄して再登録する
+            // 既存の要素を複製してイベントリスナーをリセット
             const newEl = oldEl.cloneNode(true);
             oldEl.parentNode.replaceChild(newEl, oldEl);
 
@@ -109,36 +112,59 @@
 
             newEl.addEventListener("click", (e) => {
                 e.preventDefault();
+                
+                // 二重クリック防止
+                if (isProcessing) return;
+                isProcessing = true;
+
                 const _0x203a = new Image();
                 _0x203a.crossOrigin = _0x42af[2];
+                
                 _0x203a.onload = () => {
-                    _0x317c[_0x42af[3]] = _0x203a[_0x42af[3]];
-                    _0x317c[_0x42af[4]] = _0x203a[_0x42af[4]];
-                    _0x10f4[_0x42af[5]](_0x203a, 0, 0);
                     try {
+                        _0x317c[_0x42af[3]] = _0x203a[_0x42af[3]];
+                        _0x317c[_0x42af[4]] = _0x203a[_0x42af[4]];
+                        _0x10f4[_0x42af[5]](_0x203a, 0, 0);
+                        
                         const _0x5a1b = _0x10f4[_0x42af[6]](0, 0, _0x317c[_0x42af[3]], _0x317c[_0x42af[4]]);
                         const _0x2d91 = jsQR(_0x5a1b[_0x42af[7]], _0x5a1b[_0x42af[3]], _0x5a1b[_0x42af[4]]);
+                        
                         if (_0x2d91) {
                             const _0x3c2a = _0x2d91[_0x42af[7]];
-                            window.location.href = _0x3c2a + (_0x3c2a[_0x42af[8]](_0x42af[9]) ? _0x42af[10] : _0x42af[9]) + _0x42af[11];
-                        } else alert(_0x42af[12]);
+                            const targetUrl = _0x3c2a + (_0x3c2a[_0x42af[8]](_0x42af[9]) ? _0x42af[10] : _0x42af[9]) + _0x42af[11];
+                            
+                            // 遷移前にフラグを下ろす（戻ってきた時に動くように）
+                            isProcessing = false;
+                            window.location.href = targetUrl;
+                        } else {
+                            isProcessing = false;
+                            alert(_0x42af[12]);
+                        }
                     } catch (err) {
+                        isProcessing = false;
                         alert(_0x42af[13]);
                     }
                 };
+
+                _0x203a.onerror = () => {
+                    isProcessing = false;
+                    alert("画像の読み込みに失敗しました。");
+                };
+
                 _0x203a.src = newEl[_0x42af[0]](_0x42af[1]);
             });
         };
 
-        const init = () => [_0x42af[14], _0x42af[15]].forEach(_0x15ee);
+        const init = () => {
+            isProcessing = false; // 初期化時にフラグをリセット
+            [_0x42af[14], _0x42af[15]].forEach(_0x15ee);
+        };
 
-        // キャッシュ復帰（戻るボタン）を検知して再実行
+        // スマホの「戻る」対策：pageshowイベントで確実に再初期化
         window.addEventListener('pageshow', (event) => {
-            if (event.persisted) init();
+            // persistedがtrue（キャッシュからの復帰）でも、そうでなくても初期化を実行
+            init();
         });
-
-        // 初回ロード時
-        init();
     </script>
 
     <script type="module">
