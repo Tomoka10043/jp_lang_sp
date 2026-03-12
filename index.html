@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語体験授業</title>
+    <style>
+        /* 画面中央 */
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #333;
+            font-family: sans-serif;
+        }
+
+        /* 画像エリア共通 */
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 90%;
+        }
+
+        /* 2枚目は最初非表示 */
+        #wrapper-02 {
+            display: none;
+        }
+
+        /* 画像レスポンシブ対応 */
+        .image-wrapper img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+
+        /* 共通リンクエリア */
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            /* 開発が終わったら以下2行を削除またはコメントアウト */
+            background: rgba(255, 0, 0, 0.2); 
+            border: 1px solid red;
+        }
+
+        /* リンク色分け（確認用） */
+        .blue {
+            background: rgba(0, 0, 255, 0.3);
+            border: 1px solid blue;
+        }
+
+        /* --- 1枚目の配置 --- */
+        .btn-to-page2 { top: 88%; left: 50%; width: 44%; height: 4%; }
+        .link-nabi-01 { top: 52%; left: 26%; width: 14%; height: 3%; }
+        .link-kakao-01 { top: 69%; left: 39%; width: 16%; height: 4%; }
+
+        /* --- 2枚目の配置 --- */
+        .btn-to-page1 { top: 77%; left: 13%; width: 37%; height: 4%; }
+        .link-nabi-02 { top: 41%; left: 37%; width: 12%; height: 3%; }
+        .link-kakao-02 { top: 57%; left: 50%; width: 17%; height: 4%; }
+    </style>
+</head>
+<body>
+
+    <div class="image-wrapper" id="wrapper-01">
+        <img src="japan_lang_one.png" alt="個人授業案内">
+        
+        <a class="hotspot btn-to-page2" onclick="showNext()"></a>
+        
+        <a href="https://www.instagram.com/nabi_udon/" target="_blank" class="hotspot blue link-nabi-01"></a>
+        <a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-01" id="qrLink1"></a>
+    </div>
+
+    <div class="image-wrapper" id="wrapper-02">
+        <img src="japan_lang_group.png" alt="グループ授業案内">
+        
+        <a class="hotspot btn-to-page1" onclick="showPrev()"></a>
+        
+        <a href="https://www.instagram.com/nabi_udon/" target="_blank" class="hotspot blue link-nabi-02"></a>
+        <a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-02" id="qrLink2"></a>
+    </div>
+
+    <script>
+        const page1 = document.getElementById("wrapper-01");
+        const page2 = document.getElementById("wrapper-02");
+
+        function showNext() {
+            page1.style.display = "none";
+            page2.style.display = "block";
+        }
+
+        function showPrev() {
+            page2.style.display = "none";
+            page1.style.display = "block";
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js?v=1"></script>
+    <script>
+        const _0x42af = ["getAttribute", "href", "Anonymous", "width", "height", "drawImage", "getImageData", "data", "includes", "?", "&", "id=qr_only_access", "QR코드 인식에 실패했습니다.", "오류가 발생했습니다.", "qrLink1", "qrLink2"];
+        const _0x15ee = (_0x48bb) => {
+            const _0x50f2 = document.getElementById(_0x48bb);
+            if (!_0x50f2) return;
+            const _0x317c = document.createElement("canvas");
+            const _0x10f4 = _0x317c.getContext("2d", { alpha: false });
+
+            _0x50f2.addEventListener("click", (e) => {
+                e.preventDefault();
+                const _0x203a = new Image();
+                _0x203a.crossOrigin = _0x42af[2];
+                _0x203a.onload = () => {
+                    _0x317c[_0x42af[3]] = _0x203a[_0x42af[3]];
+                    _0x317c[_0x42af[4]] = _0x203a[_0x42af[4]];
+                    _0x10f4[_0x42af[5]](_0x203a, 0, 0);
+                    try {
+                        const _0x5a1b = _0x10f4[_0x42af[6]](0, 0, _0x317c[_0x42af[3]], _0x317c[_0x42af[4]]);
+                        const _0x2d91 = jsQR(_0x5a1b[_0x42af[7]], _0x5a1b[_0x42af[3]], _0x5a1b[_0x42af[4]]);
+                        if (_0x2d91) {
+                            const _0x3c2a = _0x2d91[_0x42af[7]];
+                            window.location.href = _0x3c2a + (_0x3c2a[_0x42af[8]](_0x42af[9]) ? _0x42af[10] : _0x42af[9]) + _0x42af[11];
+                        } else alert(_0x42af[12]);
+                    } catch (err) { 
+                        alert(_0x42af[13]); 
+                    }
+                };
+                _0x203a.src = _0x50f2[_0x42af[0]](_0x42af[1]);
+            });
+        };
+        [_0x42af[14], _0x42af[15]].forEach(_0x15ee);
+    </script>
+
+    <script type="module">
+        import { googleSheetAPI } from './logic.js';
+
+        const display = document.getElementById('view-count');
+
+        async function updateView() {
+            const count = await googleSheetAPI.fetchViews();
+
+            if (count !== null && display) {
+                // 数値を更新
+                display.textContent = count.toLocaleString();
+                
+                // アニメーションを適用
+                display.classList.remove('update-flash');
+                void display.offsetWidth; // リフローを強制
+                display.classList.add('update-flash');
+                
+                console.log(`取得成功: ${count}`);
+            }
+
+            // 10秒待機
+            setTimeout(updateView, 10000);
+        }
+
+        // スタート
+        updateView();
+    </script>
+</body>
+</html>
