@@ -35,30 +35,25 @@ body{
     align-items:center;
 }
 
-/* --- 修正ポイント：画像にリンクを固定する設定 --- */
 .img-wrapper{
     position:relative;
     width:100%;
-    /* height: 100vhを削除し、画像に高さを合わせる */
 }
 
 .img-wrapper img{
     width:100%;
-    height:auto; /* 縦横比を維持 */
+    height:auto;
     display:block;
 }
 
 .hotspot{
     position:absolute;
     cursor:pointer;
-    /* 位置確認用に薄く色をつけています。完成したら透明(rgbaの最後を0)にしてください */
     background:rgba(255, 255, 255, 0.2); 
 }
 
 .yellow{ border:1px solid rgb(242, 255, 0); }
 .red{ border:1px solid rgb(232, 52, 11); }
-
-/* ---------------------------------- */
 
 .nav{
     position:absolute;
@@ -165,23 +160,60 @@ const navPrev = document.getElementById("navPrev")
 let current = 0
 const total = slides.length
 
+// --------------------
+// クッキー操作関数
+// --------------------
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+}
+
+function setCookie(name, value, days=7) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days*24*60*60*1000));
+    document.cookie = `${name}=${encodeURIComponent(value)};path=/;expires=${d.toUTCString()}`;
+}
+
+// --------------------
+// ドット更新とスライド表示
+// --------------------
 function updateDots(){
     dots.forEach(d=>d.classList.remove("active"))
     dots[current].classList.add("active")
 }
 
 function showSlide(i){
-    if(i>=total) current=0
-    else if(i<0) current=total-1
-    else current=i
-    slider.style.transform=`translateX(-${current*100}%)`
-    updateDots()
+    if(i >= total) current = 0;
+    else if(i < 0) current = total-1;
+    else current = i;
+
+    slider.style.transform = `translateX(-${current*100}%)`;
+    updateDots();
+
+    // 現在のスライド番号をクッキーに保存
+    setCookie("currentSlide", current, 7);
 }
 
-navNext.onclick=()=>showSlide(current+1)
-navPrev.onclick=()=>showSlide(current-1)
+// --------------------
+// ページ読み込み時にクッキーから復元
+// --------------------
+const savedSlide = getCookie("currentSlide");
+if(savedSlide !== null && !isNaN(savedSlide) && savedSlide < total) {
+    current = parseInt(savedSlide, 10);
+} else {
+    current = 0; // デフォルトはグループ画像
+}
+showSlide(current);
 
-/* swipe */
+// --------------------
+// ナビゲーション
+// --------------------
+navNext.onclick = () => showSlide(current+1)
+navPrev.onclick = () => showSlide(current-1)
+
+// --------------------
+// スワイプ対応
+// --------------------
 let startX=0
 slider.addEventListener("touchstart",e=>{ startX = e.touches[0].clientX })
 slider.addEventListener("touchend",e=>{
@@ -190,7 +222,9 @@ slider.addEventListener("touchend",e=>{
     if(diff<-50) showSlide(current-1)
 })
 
-/* QR system */
+// --------------------
+// QRコード読み取り
+// --------------------
 let qrBusy=false
 
 function readQR(src){
@@ -230,7 +264,9 @@ function readQR(src){
     }
 }
 
-/* QR click */
+// --------------------
+// QRクリックイベント
+// --------------------
 document.querySelectorAll(".qr-link").forEach(el=>{
     const src = el.dataset.qr
     const img = new Image(); img.src=src // preload
