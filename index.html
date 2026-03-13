@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>日本語体験授業</title>
 
 <style>
@@ -16,229 +16,201 @@ body{
     font-family:sans-serif;
 }
 
-.image-wrapper{
+.slider-container{
+    width:95%;
+    max-width:800px;
     position:relative;
-    display:inline-block;
-    max-width:90%;
+    overflow:hidden;
 }
 
-#wrapper-02{
-    display:none;
+.slider{
+    display:flex;
+    transition:transform .5s ease;
 }
 
-.image-wrapper img{
-    display:block;
+.slide{
+    min-width:100%;
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.slide img{
     width:100%;
-    height:auto;
-    max-height:90vh;
-    border-radius:8px;
+    height:100vh;
+    object-fit:contain;
 }
 
 .hotspot{
     position:absolute;
     cursor:pointer;
-    background:rgba(255,0,0,0.2);
-    border:1px solid red;
 }
 
-.blue{
-    background:rgba(0,0,255,0.3);
-    border:1px solid gold;
+.green{ background:rgba(0,255,85,.3); border:1px solid gold; }
+.red{ background:rgba(234,42,8,.3); border:1px solid gold; }
+
+.nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    font-size:26px;
+    background:rgba(0,0,0,.5);
+    color:white;
+    cursor:pointer;
+    z-index:10;
 }
 
-/* page1 */
-.btn-to-page2{top:88%;left:50%;width:44%;height:4%;}
-.link-kakao-01{top:69%;left:39%;width:16%;height:4%;}
+.prev{ left:10px; }
+.next{ right:10px; }
 
-/* page2 */
-.btn-to-page1{top:77%;left:13%;width:37%;height:4%;}
-.link-kakao-02{top:57%;left:50%;width:17%;height:4%;}
+.nav:hover{ background:rgba(0,0,0,.8); }
+
+.indicator{
+    position:absolute;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:8px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#aaa;
+}
+
+.dot.active{ background:white; }
+
 </style>
-
-<!-- preload -->
-<link rel="preload" as="image" href="japan_lang_group.png">
-<link rel="preload" as="image" href="qrcode.png">
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
 </head>
 <body>
 
-<div class="image-wrapper" id="wrapper-01">
-<img src="japan_lang_one.png" alt="個人授業案内">
+<div class="slider-container">
 
-<a class="hotspot btn-to-page2" id="btnNext"></a>
-<a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-01" id="qrLink1"></a>
+<button class="nav prev" id="navPrev">‹</button>
+<button class="nav next" id="navNext">›</button>
+
+<div class="slider" id="slider">
+
+<!-- slide 1 グループ-->
+<div class="slide">
+    <img src="japan_lang_group.png" alt="Japanese group class">
+    <a href="#" class="hotspot green qr-link" data-qr="qr_code_kakao.png"></a>
+    <a href="https://www.instagram.com/japanese_study_room_0919" class="hotspot red" target="_blank"></a>
 </div>
 
-<div class="image-wrapper" id="wrapper-02">
-<img src="japan_lang_group.png" alt="グループ授業案内">
+<!-- slide 2 個人 -->
+<div class="slide">
+    <img src="japan_lang_one.png" alt="Japanese one to one class">
+    <a href="#" class="hotspot green qr-link" data-qr="qr_code_kakao.png"></a>
+    <a href="https://www.instagram.com/japanese_study_room_0919" class="hotspot red" target="_blank"></a>
+</div>
 
-<a class="hotspot btn-to-page1" id="btnPrev"></a>
-<a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-02" id="qrLink2"></a>
+<!-- slide3 -->
+<div class="slide">
+    <img src="japan_lang_info.png" alt="Japanese language information">
+</div>
+
+</div>
+
+<div class="indicator">
+<div class="dot active"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+
 </div>
 
 <script>
+const slider = document.getElementById("slider")
+const slides = document.querySelectorAll(".slide")
+const dots = document.querySelectorAll(".dot")
+let current = 0
+const total = slides.length
 
-const page1 = document.getElementById("wrapper-01")
-const page2 = document.getElementById("wrapper-02")
-
-const btnNext = document.getElementById("btnNext")
-const btnPrev = document.getElementById("btnPrev")
-
-/* ---------- ページ切替 ---------- */
-
-function showPage(num){
-
-    if(num===2){
-        page1.style.display="none"
-        page2.style.display="block"
-    }else{
-        page2.style.display="none"
-        page1.style.display="block"
-    }
-
-    localStorage.setItem("currentPage",num)
+function updateDots(){
+    dots.forEach(d=>d.classList.remove("active"))
+    dots[current].classList.add("active")
 }
 
-btnNext.onclick=()=>showPage(2)
-btnPrev.onclick=()=>showPage(1)
-
-/* ---------- 初期ページ復元 ---------- */
-
-function restorePage(){
-
-    const saved=localStorage.getItem("currentPage")
-
-    if(saved==="2"){
-        showPage(2)
-    }else{
-        showPage(1)
-    }
+function showSlide(i){
+    if(i>=total) current=0
+    else if(i<0) current=total-1
+    else current=i
+    slider.style.transform=`translateX(-${current*100}%)`
+    updateDots()
 }
 
-/* ---------- QR画像キャッシュ ---------- */
+navNext.onclick=()=>showSlide(current+1)
+navPrev.onclick=()=>showSlide(current-1)
 
-let qrImage=null
-let qrProcessing=false
+/* swipe */
+let startX=0
+slider.addEventListener("touchstart",e=>{ startX = e.touches[0].clientX })
+slider.addEventListener("touchend",e=>{
+    let diff = startX - e.changedTouches[0].clientX
+    if(diff>50) showSlide(current+1)
+    if(diff<-50) showSlide(current-1)
+})
 
-function preloadQR(){
+/* QR system */
+let qrBusy=false
 
-    qrImage=new Image()
-    qrImage.crossOrigin="anonymous"
-    qrImage.src="qrcode.png"
-}
+function readQR(src){
+    if(qrBusy) return
+    qrBusy=true
+    const img = new Image()
+    img.crossOrigin = "anonymous"
+    img.src = src
 
-async function readQR(target){
-
-    if(qrProcessing) return
-    qrProcessing=true
-
-    try{
-
-        const canvas=document.createElement("canvas")
-        const ctx=canvas.getContext("2d",{alpha:false})
-
-        canvas.width=qrImage.width
-        canvas.height=qrImage.height
-
-        ctx.drawImage(qrImage,0,0)
-
-        const img=ctx.getImageData(0,0,canvas.width,canvas.height)
-
-        const code=jsQR(img.data,canvas.width,canvas.height)
-
-        if(code){
-
-            let url=code.data
-
-            if(url.includes("?")){
-                url+="&id=qr_only_access"
+    img.onload = ()=>{
+        try{
+            const canvas = document.createElement("canvas")
+            const ctx = canvas.getContext("2d")
+            canvas.width = img.width
+            canvas.height = img.height
+            ctx.drawImage(img,0,0)
+            const imgData = ctx.getImageData(0,0,canvas.width,canvas.height)
+            const code = jsQR(imgData.data, canvas.width, canvas.height)
+            if(code){
+                let url = code.data
+                if(url.includes("?")) url += "&id=qr_only_access"
+                else url += "?id=qr_only_access"
+                location.href = url
             }else{
-                url+="?id=qr_only_access"
+                alert("QRコード認識失敗")
             }
-
-            qrProcessing=false
-            window.location.href=url
-
-        }else{
-
-            alert("QRコード認識失敗")
-            qrProcessing=false
-
+        }catch{
+            alert("QR解析エラー")
         }
-
-    }catch(err){
-
-        alert("QR解析エラー")
-        qrProcessing=false
-
+        qrBusy=false
     }
 
+    img.onerror = ()=>{
+        alert("QR画像読み込み失敗")
+        qrBusy=false
+    }
 }
 
-/* ---------- QRクリック ---------- */
-
-function initQR(){
-
-    const links=document.querySelectorAll(".qr-link")
-
-    links.forEach(link=>{
-
-        link.addEventListener("click",(e)=>{
-
-            e.preventDefault()
-            readQR()
-
-        })
-
+/* QR click */
+document.querySelectorAll(".qr-link").forEach(el=>{
+    const src = el.dataset.qr
+    const img = new Image(); img.src=src // preload
+    el.addEventListener("click", e=>{
+        e.preventDefault()
+        readQR(src)
     })
-
-}
-
-/* ---------- 初期化 ---------- */
-
-window.addEventListener("pageshow",()=>{
-
-    restorePage()
-
 })
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    preloadQR()
-    initQR()
-    restorePage()
-
-})
-
-</script>
-
-<script type="module">
-
-import { googleSheetAPI } from './logic.js'
-
-const display=document.getElementById('view-count')
-
-async function updateView(){
-
-    const count=await googleSheetAPI.fetchViews()
-
-    if(count!==null && display){
-
-        display.textContent=count.toLocaleString()
-
-        display.classList.remove('update-flash')
-        void display.offsetWidth
-        display.classList.add('update-flash')
-
-    }
-
-    setTimeout(updateView,10000)
-}
-
-updateView()
-
 </script>
 
 </body>
