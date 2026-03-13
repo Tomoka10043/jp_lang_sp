@@ -50,6 +50,11 @@ body{
 .green{ background:rgba(0,255,85,.3); border:1px solid gold; }
 .red{ background:rgba(234,42,8,.3); border:1px solid gold; }
 
+.link_group_kakao{ top:60%; left:37%; width:18%; height:3%; }
+.link_group_instagram{ top:63%; left:37%; width:18%; height:3%; }
+.link_one_kakao{ top:60%; left:37%; width:20%; height:3%; }
+.link_one_instagram{ top:63%; left:37%; width:20%; height:3%; }
+
 .nav{
     position:absolute;
     top:50%;
@@ -105,15 +110,35 @@ body{
 <!-- slide 1 グループ-->
 <div class="slide">
     <img src="japan_lang_group.png" alt="Japanese group class">
-    <a href="#" class="hotspot green qr-link" data-qr="qr_code_kakao.png"></a>
-    <a href="https://www.instagram.com/japanese_study_room_0919" class="hotspot red" target="_blank"></a>
+
+    <!-- Kakao QR -->
+    <a href="#" 
+       class="hotspot green link_group_kakao qr-link" 
+       data-qr="qr_code_kakao.png">
+    </a>
+
+    <!-- Instagram 直接リンク -->
+    <a href="https://www.instagram.com/japanese_study_room_0919" 
+       class="hotspot red link_group_instagram"
+       target="_blank">
+    </a>
 </div>
 
 <!-- slide 2 個人 -->
 <div class="slide">
     <img src="japan_lang_one.png" alt="Japanese one to one class">
-    <a href="#" class="hotspot green qr-link" data-qr="qr_code_kakao.png"></a>
-    <a href="https://www.instagram.com/japanese_study_room_0919" class="hotspot red" target="_blank"></a>
+
+    <!-- Kakao QR -->
+    <a href="#" 
+       class="hotspot green link_one_kakao qr-link" 
+       data-qr="qr_code_kakao.png">
+    </a>
+
+    <!-- Instagram 直接リンク -->
+    <a href="https://www.instagram.com/japanese_study_room_0919" 
+       class="hotspot red link_one_instagram"
+       target="_blank">
+    </a>
 </div>
 
 <!-- slide3 -->
