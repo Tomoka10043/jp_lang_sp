@@ -1,198 +1,245 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日本語体験授業</title>
-    <style>
-        /* 画面中央 */
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #333;
-            font-family: sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本語体験授業</title>
 
-        /* 画像エリア共通 */
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-            max-width: 90%;
-        }
+<style>
+body{
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background:#333;
+    font-family:sans-serif;
+}
 
-        /* 2枚目は最初非表示 */
-        #wrapper-02 {
-            display: none;
-        }
+.image-wrapper{
+    position:relative;
+    display:inline-block;
+    max-width:90%;
+}
 
-        /* 画像レスポンシブ対応 */
-        .image-wrapper img {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            border-radius: 8px;
-        }
+#wrapper-02{
+    display:none;
+}
 
-        /* 共通リンクエリア */
-        .hotspot {
-            position: absolute;
-            cursor: pointer;
-            /* 開発が終わったら以下2行を削除またはコメントアウト */
-            background: rgba(255, 0, 0, 0.2);
-            border: 1px solid red;
-        }
+.image-wrapper img{
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:90vh;
+    border-radius:8px;
+}
 
-        /* リンク色分け（確認用） */
-        .blue {
-            background: rgba(0, 0, 255, 0.3);
-            border: 1px solid gold;
-        }
+.hotspot{
+    position:absolute;
+    cursor:pointer;
+    background:rgba(255,0,0,0.2);
+    border:1px solid red;
+}
 
-        /* --- 1枚目の配置 --- */
-        .btn-to-page2 { top: 88%; left: 50%; width: 44%; height: 4%; }
-        .link-kakao-01 { top: 69%; left: 39%; width: 16%; height: 4%; }
+.blue{
+    background:rgba(0,0,255,0.3);
+    border:1px solid gold;
+}
 
-        /* --- 2枚目の配置 --- */
-        .btn-to-page1 { top: 77%; left: 13%; width: 37%; height: 4%; }
-        .link-kakao-02 { top: 57%; left: 50%; width: 17%; height: 4%; }
-    </style>
+/* page1 */
+.btn-to-page2{top:88%;left:50%;width:44%;height:4%;}
+.link-kakao-01{top:69%;left:39%;width:16%;height:4%;}
+
+/* page2 */
+.btn-to-page1{top:77%;left:13%;width:37%;height:4%;}
+.link-kakao-02{top:57%;left:50%;width:17%;height:4%;}
+</style>
+
+<!-- preload -->
+<link rel="preload" as="image" href="japan_lang_group.png">
+<link rel="preload" as="image" href="qrcode.png">
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
 </head>
 <body>
 
-    <div class="image-wrapper" id="wrapper-01">
-        <img src="japan_lang_one.png" alt="個人授業案内">
+<div class="image-wrapper" id="wrapper-01">
+<img src="japan_lang_one.png" alt="個人授業案内">
 
-        <a class="hotspot btn-to-page2" onclick="showNext()"></a>
-        <a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-01" id="qrLink1"></a>
-    </div>
+<a class="hotspot btn-to-page2" id="btnNext"></a>
+<a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-01" id="qrLink1"></a>
+</div>
 
-    <div class="image-wrapper" id="wrapper-02">
-        <img src="japan_lang_group.png" alt="グループ授業案内">
+<div class="image-wrapper" id="wrapper-02">
+<img src="japan_lang_group.png" alt="グループ授業案内">
 
-        <a class="hotspot btn-to-page1" onclick="showPrev()"></a>
-        <a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-02" id="qrLink2"></a>
-    </div>
+<a class="hotspot btn-to-page1" id="btnPrev"></a>
+<a href="qrcode.png" target="_blank" class="qr-link hotspot blue link-kakao-02" id="qrLink2"></a>
+</div>
 
-    <script>
-        const page1 = document.getElementById("wrapper-01");
-        const page2 = document.getElementById("wrapper-02");
+<script>
 
-        function showNext() {
-            page1.style.display = "none";
-            page2.style.display = "block";
-        }
+const page1 = document.getElementById("wrapper-01")
+const page2 = document.getElementById("wrapper-02")
 
-        function showPrev() {
-            page2.style.display = "none";
-            page1.style.display = "block";
-        }
-    </script>
+const btnNext = document.getElementById("btnNext")
+const btnPrev = document.getElementById("btnPrev")
 
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js?v=1"></script>
-    <script>
-        const _0x42af = ["getAttribute", "href", "Anonymous", "width", "height", "drawImage", "getImageData", "data", "includes", "?", "&", "id=qr_only_access", "QR코드 인식에 실패했습니다.", "오류가 발생했습니다.", "qrLink1", "qrLink2"];
+/* ---------- ページ切替 ---------- */
 
-        // 解析中かどうかを判定するフラグ
-        let isProcessing = false;
+function showPage(num){
 
-        const _0x15ee = (_0x48bb) => {
-            const oldEl = document.getElementById(_0x48bb);
-            if (!oldEl) return;
+    if(num===2){
+        page1.style.display="none"
+        page2.style.display="block"
+    }else{
+        page2.style.display="none"
+        page1.style.display="block"
+    }
 
-            // 既存の要素を複製してイベントリスナーをリセット
-            const newEl = oldEl.cloneNode(true);
-            oldEl.parentNode.replaceChild(newEl, oldEl);
+    localStorage.setItem("currentPage",num)
+}
 
-            const _0x317c = document.createElement("canvas");
-            const _0x10f4 = _0x317c.getContext("2d", { alpha: false });
+btnNext.onclick=()=>showPage(2)
+btnPrev.onclick=()=>showPage(1)
 
-            newEl.addEventListener("click", (e) => {
-                e.preventDefault();
-                
-                // 二重クリック防止
-                if (isProcessing) return;
-                isProcessing = true;
+/* ---------- 初期ページ復元 ---------- */
 
-                const _0x203a = new Image();
-                _0x203a.crossOrigin = _0x42af[2];
-                
-                _0x203a.onload = () => {
-                    try {
-                        _0x317c[_0x42af[3]] = _0x203a[_0x42af[3]];
-                        _0x317c[_0x42af[4]] = _0x203a[_0x42af[4]];
-                        _0x10f4[_0x42af[5]](_0x203a, 0, 0);
-                        
-                        const _0x5a1b = _0x10f4[_0x42af[6]](0, 0, _0x317c[_0x42af[3]], _0x317c[_0x42af[4]]);
-                        const _0x2d91 = jsQR(_0x5a1b[_0x42af[7]], _0x5a1b[_0x42af[3]], _0x5a1b[_0x42af[4]]);
-                        
-                        if (_0x2d91) {
-                            const _0x3c2a = _0x2d91[_0x42af[7]];
-                            const targetUrl = _0x3c2a + (_0x3c2a[_0x42af[8]](_0x42af[9]) ? _0x42af[10] : _0x42af[9]) + _0x42af[11];
-                            
-                            // 遷移前にフラグを下ろす（戻ってきた時に動くように）
-                            isProcessing = false;
-                            window.location.href = targetUrl;
-                        } else {
-                            isProcessing = false;
-                            alert(_0x42af[12]);
-                        }
-                    } catch (err) {
-                        isProcessing = false;
-                        alert(_0x42af[13]);
-                    }
-                };
+function restorePage(){
 
-                _0x203a.onerror = () => {
-                    isProcessing = false;
-                    alert("画像の読み込みに失敗しました。");
-                };
+    const saved=localStorage.getItem("currentPage")
 
-                _0x203a.src = newEl[_0x42af[0]](_0x42af[1]);
-            });
-        };
+    if(saved==="2"){
+        showPage(2)
+    }else{
+        showPage(1)
+    }
+}
 
-        const init = () => {
-            isProcessing = false; // 初期化時にフラグをリセット
-            [_0x42af[14], _0x42af[15]].forEach(_0x15ee);
-        };
+/* ---------- QR画像キャッシュ ---------- */
 
-        // スマホの「戻る」対策：pageshowイベントで確実に再初期化
-        window.addEventListener('pageshow', (event) => {
-            // persistedがtrue（キャッシュからの復帰）でも、そうでなくても初期化を実行
-            init();
-        });
-    </script>
+let qrImage=null
+let qrProcessing=false
 
-    <script type="module">
-        import { googleSheetAPI } from './logic.js';
+function preloadQR(){
 
-        const display = document.getElementById('view-count');
+    qrImage=new Image()
+    qrImage.crossOrigin="anonymous"
+    qrImage.src="qrcode.png"
+}
 
-        async function updateView() {
-            const count = await googleSheetAPI.fetchViews();
+async function readQR(target){
 
-            if (count !== null && display) {
-                // 数値を更新
-                display.textContent = count.toLocaleString();
+    if(qrProcessing) return
+    qrProcessing=true
 
-                // アニメーションを適用
-                display.classList.remove('update-flash');
-                void display.offsetWidth; // リフローを強制
-                display.classList.add('update-flash');
+    try{
 
-                console.log(`取得成功: ${count}`);
+        const canvas=document.createElement("canvas")
+        const ctx=canvas.getContext("2d",{alpha:false})
+
+        canvas.width=qrImage.width
+        canvas.height=qrImage.height
+
+        ctx.drawImage(qrImage,0,0)
+
+        const img=ctx.getImageData(0,0,canvas.width,canvas.height)
+
+        const code=jsQR(img.data,canvas.width,canvas.height)
+
+        if(code){
+
+            let url=code.data
+
+            if(url.includes("?")){
+                url+="&id=qr_only_access"
+            }else{
+                url+="?id=qr_only_access"
             }
 
-            // 10秒待機
-            setTimeout(updateView, 10000);
+            qrProcessing=false
+            window.location.href=url
+
+        }else{
+
+            alert("QRコード認識失敗")
+            qrProcessing=false
+
         }
 
-        // スタート
-        updateView();
-    </script>
+    }catch(err){
+
+        alert("QR解析エラー")
+        qrProcessing=false
+
+    }
+
+}
+
+/* ---------- QRクリック ---------- */
+
+function initQR(){
+
+    const links=document.querySelectorAll(".qr-link")
+
+    links.forEach(link=>{
+
+        link.addEventListener("click",(e)=>{
+
+            e.preventDefault()
+            readQR()
+
+        })
+
+    })
+
+}
+
+/* ---------- 初期化 ---------- */
+
+window.addEventListener("pageshow",()=>{
+
+    restorePage()
+
+})
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    preloadQR()
+    initQR()
+    restorePage()
+
+})
+
+</script>
+
+<script type="module">
+
+import { googleSheetAPI } from './logic.js'
+
+const display=document.getElementById('view-count')
+
+async function updateView(){
+
+    const count=await googleSheetAPI.fetchViews()
+
+    if(count!==null && display){
+
+        display.textContent=count.toLocaleString()
+
+        display.classList.remove('update-flash')
+        void display.offsetWidth
+        display.classList.add('update-flash')
+
+    }
+
+    setTimeout(updateView,10000)
+}
+
+updateView()
+
+</script>
+
 </body>
 </html>
