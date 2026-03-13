@@ -1,280 +1,272 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>日本語体験授業</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>日本語体験授業</title>
 
-<style>
-body{
-    margin:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    background:#333;
-    font-family:sans-serif;
-}
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #333;
+            font-family: sans-serif;
+        }
 
-.slider-container{
-    width:95%;
-    max-width:800px;
-    position:relative;
-    overflow:hidden;
-}
+        .slider-container {
+            width: 95%;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
 
-.slider{
-    display:flex;
-    transition:transform .5s ease;
-}
+        .slider {
+            display: flex;
+            transition: transform .5s ease;
+        }
 
-.slide{
-    min-width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
+        .slide {
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.img-wrapper{
-    position:relative;
-    width:100%;
-}
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+        }
 
-.img-wrapper img{
-    width:100%;
-    height:auto;
-    display:block;
-}
+        .img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
-.hotspot{
-    position:absolute;
-    cursor:pointer;
-    background:rgba(255, 255, 255, 0.2); 
-}
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2); /* 調整用：本番は 0 にしてもOK */
+        }
 
-.yellow{ border:1px solid rgb(242, 255, 0); }
-.red{ border:1px solid rgb(232, 52, 11); }
+        /* 枠線が必要な場合のクラス */
+        .yellow { border: 1px solid white; }
+        .red { border: 1px solid white; }
 
-.nav{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    width:45px;
-    height:45px;
-    border:none;
-    border-radius:50%;
-    font-size:26px;
-    background:rgba(0,0,0,.5);
-    color:white;
-    cursor:pointer;
-    z-index:10;
-}
+        .nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            font-size: 26px;
+            background: rgba(0,0,0,.5);
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+        }
 
-.prev{ left:10px; }
-.next{ right:10px; }
+        .prev { left: 10px; }
+        .next { right: 10px; }
 
-.nav:hover{ background:rgba(0,0,0,.8); }
+        .nav:hover { background: rgba(0,0,0,.8); }
 
-.indicator{
-    position:absolute;
-    bottom:10px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:8px;
-}
+        .indicator {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
 
-.dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#aaa;
-}
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #aaa;
+        }
 
-.dot.active{ background:white; }
-</style>
+        .dot.active { background: white; }
+    </style>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MK9B8TR3X3"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-ABCDEFG123');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MK9B8TR3X3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
 
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+        // ここもご自身のアナリティクスIDに変更してください
+        gtag('config', 'G-MK9B8TR3X3');
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 </head>
 <body>
 
 <div class="slider-container">
 
-<button class="nav prev" id="navPrev">‹</button>
-<button class="nav next" id="navNext">›</button>
+    <button class="nav prev" id="navPrev">‹</button>
+    <button class="nav next" id="navNext">›</button>
 
-<div class="slider" id="slider">
+    <div class="slider" id="slider">
 
-<div class="slide">
-    <div class="img-wrapper">
-        <img src="japan_lang_group.png" alt="Japanese group class">
-        <a href="#" class="hotspot yellow qr-link" data-qr="qr_code_kakao.png"
-           style="top:59%; left:33%; width:18%; height:3%;"></a>
-        <a href="https://www.instagram.com/japanese_study_room_0919" target="_blank"
-           class="hotspot red"
-           style="top:63%; left:33%; width:18%; height:3.5%;"></a>
+        <div class="slide">
+            <div class="img-wrapper">
+                <img src="japan_lang_group.png" alt="Japanese group class">
+                <a href="#" class="hotspot yellow1 qr-link" data-qr="qr_code_kakao.png"
+                   style="top:59%; left:33%; width:18%; height:3%;"></a>
+                <a href="https://www.instagram.com/japanese_study_room_0919" target="_blank"
+                   class="hotspot red1"
+                   style="top:63%; left:33%; width:18%; height:3.5%;"></a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="img-wrapper">
+                <img src="japan_lang_one.png" alt="Japanese one to one class">
+                <a href="#" class="hotspot yellow1 qr-link" data-qr="qr_code_kakao.png"
+                   style="top:60%; left:33%; width:18%; height:3%;"></a>
+                <a href="https://www.instagram.com/japanese_study_room_0919" target="_blank"
+                   class="hotspot red1"
+                   style="top:63.5%; left:33%; width:18%; height:3.5%;"></a>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="img-wrapper">
+                <img src="japan_lang_info.png" alt="Japanese language information">
+            </div>
+        </div>
+
     </div>
-</div>
 
-<div class="slide">
-    <div class="img-wrapper">
-        <img src="japan_lang_one.png" alt="Japanese one to one class">
-        <a href="#" class="hotspot yellow qr-link" data-qr="qr_code_kakao.png"
-           style="top:60%; left:33%; width:18%; height:3%;"></a>
-        <a href="https://www.instagram.com/japanese_study_room_0919" target="_blank"
-           class="hotspot red"
-           style="top:63.5%; left:33%; width:18%; height:3.5%;"></a>
+    <div class="indicator">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
-</div>
-
-<div class="slide">
-    <div class="img-wrapper">
-        <img src="japan_lang_info.png" alt="Japanese language information">
-    </div>
-</div>
-
-</div>
-
-<div class="indicator">
-<div class="dot active"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-</div>
 
 </div>
 
 <script>
-const slider = document.getElementById("slider")
-const slides = document.querySelectorAll(".slide")
-const dots = document.querySelectorAll(".dot")
-const navNext = document.getElementById("navNext")
-const navPrev = document.getElementById("navPrev")
-let current = 0
-const total = slides.length
+    const slider = document.getElementById("slider");
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll(".dot");
+    const navNext = document.getElementById("navNext");
+    const navPrev = document.getElementById("navPrev");
+    let current = 0;
+    const total = slides.length;
 
-// --------------------
-// クッキー操作関数
-// --------------------
-function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
-}
+    // --- クッキー操作 ---
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
 
-function setCookie(name, value, days=7) {
-    const d = new Date();
-    d.setTime(d.getTime() + (days*24*60*60*1000));
-    document.cookie = `${name}=${encodeURIComponent(value)};path=/;expires=${d.toUTCString()}`;
-}
+    function setCookie(name, value, days = 7) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${encodeURIComponent(value)};path=/;expires=${d.toUTCString()}`;
+    }
 
-// --------------------
-// ドット更新とスライド表示
-// --------------------
-function updateDots(){
-    dots.forEach(d=>d.classList.remove("active"))
-    dots[current].classList.add("active")
-}
+    // --- 表示更新 ---
+    function updateDots() {
+        dots.forEach(d => d.classList.remove("active"));
+        dots[current].classList.add("active");
+    }
 
-function showSlide(i){
-    if(i >= total) current = 0;
-    else if(i < 0) current = total-1;
-    else current = i;
+    function showSlide(i) {
+        if (i >= total) current = 0;
+        else if (i < 0) current = total - 1;
+        else current = i;
 
-    slider.style.transform = `translateX(-${current*100}%)`;
-    updateDots();
+        slider.style.transform = `translateX(-${current * 100}%)`;
+        updateDots();
+        setCookie("currentSlide", current, 7);
+    }
 
-    // 現在のスライド番号をクッキーに保存
-    setCookie("currentSlide", current, 7);
-}
+    // 復元
+    const savedSlide = getCookie("currentSlide");
+    if (savedSlide !== null && !isNaN(savedSlide) && savedSlide < total) {
+        current = parseInt(savedSlide, 10);
+    }
+    showSlide(current);
 
-// --------------------
-// ページ読み込み時にクッキーから復元
-// --------------------
-const savedSlide = getCookie("currentSlide");
-if(savedSlide !== null && !isNaN(savedSlide) && savedSlide < total) {
-    current = parseInt(savedSlide, 10);
-} else {
-    current = 0; // デフォルトはグループ画像
-}
-showSlide(current);
+    // --- イベント ---
+    navNext.onclick = () => showSlide(current + 1);
+    navPrev.onclick = () => showSlide(current - 1);
 
-// --------------------
-// ナビゲーション
-// --------------------
-navNext.onclick = () => showSlide(current+1)
-navPrev.onclick = () => showSlide(current-1)
+    let startX = 0;
+    slider.addEventListener("touchstart", e => { startX = e.touches[0].clientX; });
+    slider.addEventListener("touchend", e => {
+        let diff = startX - e.changedTouches[0].clientX;
+        if (diff > 50) showSlide(current + 1);
+        if (diff < -50) showSlide(current - 1);
+    });
 
-// --------------------
-// スワイプ対応
-// --------------------
-let startX=0
-slider.addEventListener("touchstart",e=>{ startX = e.touches[0].clientX })
-slider.addEventListener("touchend",e=>{
-    let diff = startX - e.changedTouches[0].clientX
-    if(diff>50) showSlide(current+1)
-    if(diff<-50) showSlide(current-1)
-})
+    // --- QR解析ロジック ---
+    let qrBusy = false;
 
-// --------------------
-// QRコード読み取り
-// --------------------
-let qrBusy=false
+    function readQR(src) {
+        if (qrBusy) return;
+        qrBusy = true;
+        
+        const img = new Image();
+        img.crossOrigin = "anonymous"; 
+        img.src = src;
 
-function readQR(src){
-    if(qrBusy) return
-    qrBusy=true
-    const img = new Image()
-    img.crossOrigin = "anonymous"
-    img.src = src
+        img.onload = () => {
+            try {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imgData.data, canvas.width, canvas.height);
+                
+                if (code) {
+                    let url = code.data;
+                    if (url.includes("?")) url += "&id=qr_only_access";
+                    else url += "?id=qr_only_access";
+                    
+                    // GAイベントを送信
+                    gtag('event', 'qr_click', { 'event_label': src });
 
-    img.onload = ()=>{
-        try{
-            const canvas = document.createElement("canvas")
-            const ctx = canvas.getContext("2d")
-            canvas.width = img.width
-            canvas.height = img.height
-            ctx.drawImage(img,0,0)
-            const imgData = ctx.getImageData(0,0,canvas.width,canvas.height)
-            const code = jsQR(imgData.data, canvas.width, canvas.height)
-            if(code){
-                let url = code.data
-                if(url.includes("?")) url += "&id=qr_only_access"
-                else url += "?id=qr_only_access"
-                location.href = url
-                gtag('event', 'qr_click', { 'event_label': src });
-            }else{
-                alert("QRコード認識失敗")
+                    // 【修正】新しいタブで開く
+                    window.open(url, '_blank');
+                    
+                } else {
+                    alert("QRコードが認識できませんでした。");
+                }
+            } catch (err) {
+                console.error("QR Error:", err);
+                alert("QR解析中にエラーが発生しました。");
             }
-        }catch{
-            alert("QR解析エラー")
-        }
-        qrBusy=false
+            qrBusy = false;
+        };
+
+        img.onerror = () => {
+            alert("QR画像の読み込みに失敗しました。");
+            qrBusy = false;
+        };
     }
 
-    img.onerror = ()=>{
-        alert("QR画像読み込み失敗")
-        qrBusy=false
-    }
-}
-
-// --------------------
-// QRクリックイベント
-// --------------------
-document.querySelectorAll(".qr-link").forEach(el=>{
-    const src = el.dataset.qr
-    const img = new Image(); img.src=src // preload
-    el.addEventListener("click", e=>{
-        e.preventDefault()
-        readQR(src)
-    })
-})
+    // --- QRリンクのクリック登録 ---
+    document.querySelectorAll(".qr-link").forEach(el => {
+        const src = el.dataset.qr;
+        el.addEventListener("click", e => {
+            e.preventDefault();
+            readQR(src);
+        });
+    });
 </script>
 
 </body>
