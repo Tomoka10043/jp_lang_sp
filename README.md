@@ -1,1 +1,0 @@
-# jp_lang_sp
